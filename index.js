@@ -1,41 +1,28 @@
-import { Telegraf, Markup } from "telegraf";
-import axios from "axios";
+import { Telegraf, session, Scenes } from "telegraf";
 import dotenv from "dotenv";
-import translate from "translate";
 
-const GET_LOCALITY_URL = "https://api.weatherapi.com/v1/search.json";
+import { setLocation } from "./helpers/scenes.js";
+import { commands } from "./helpers/commands.js";
+
+let currentCity = "";
 
 dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-let location;
+const stage = new Scenes.Stage([setLocation]);
+bot.use(session());
+bot.use(stage.middleware());
 
 bot.start((ctx) => {
-  ctx.reply(
-    "Добро пожаловать к Tlepsh!\nЯ предсказываю погоду\nВведите ваш город :"
-  );
+  commands.Start(ctx);
+  commands.ShowMenu(ctx);
+});
+bot.command("menu", commands.ShowMenu);
+bot.action("CURRENT_ACTION", async (ctx) => {
+  await ctx.reply("Current wheather");
+  ctx.scene.leave();
 });
 
-bot.on("message", async (ctx) => {
-  let city = ctx.message.text.replace(/\s/g, "");
-  city = await translate(city, { from: "ru", to: "en" });
-  location = await getLocality(city);
-  ctx.reply(`Погода в ${location.city}`);
-});
-
-bot.hears("Да, то что нужно!", (ctx) => {
-  ctx.reply("WORks");
-});
-
-const getLocality = async (locality) => {
-  const config = {
-    params: {
-      q: locality,
-      key: process.env.WHEATHER_API_KEY,
-    },
-  };
-  let response = await axios.get(GET_LOCALITY_URL, config);
-  return response.data[0];
-};
+bot.on("message", commands.NotCommand);
 
 bot.launch();
