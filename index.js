@@ -1,28 +1,24 @@
 import { Telegraf, session, Scenes } from "telegraf";
 import dotenv from "dotenv";
 
-import { setLocation } from "./helpers/scenes.js";
-import { commands } from "./helpers/commands.js";
-
-let currentCity = "";
+import { handlers } from "./helpers/handlers.js";
+import { setLocationScene } from "./helpers/scenes.js";
 
 dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const stage = new Scenes.Stage([setLocation]);
+const stage = new Scenes.Stage([setLocationScene]);
 bot.use(session());
 bot.use(stage.middleware());
 
-bot.start((ctx) => {
-  commands.Start(ctx);
-  commands.ShowMenu(ctx);
+bot.start(async (ctx) => {
+  await handlers.Start(ctx);
+  await ctx.scene.enter("SET_LOCATION");
 });
-bot.command("menu", commands.ShowMenu);
-bot.action("CURRENT_ACTION", async (ctx) => {
-  await ctx.reply("Current wheather");
-  ctx.scene.leave();
+bot.command("menu", handlers.Menu);
+bot.hears("Погода сейчас", (ctx) => {
+  console.log(ctx);
 });
-
-bot.on("message", commands.NotCommand);
+bot.on("message", (ctx) => ctx.reply("Да-да"));
 
 bot.launch();
