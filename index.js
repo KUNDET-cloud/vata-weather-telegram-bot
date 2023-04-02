@@ -1,6 +1,7 @@
 import { Telegraf, session, Scenes } from "telegraf";
 import dotenv from "dotenv";
 
+import REQUEST_TYPES from "./const.js";
 import { handlers } from "./helpers/handlers.js";
 import { setLocationScene } from "./helpers/scenes.js";
 
@@ -12,13 +13,25 @@ bot.use(session());
 bot.use(stage.middleware());
 
 bot.start(async (ctx) => {
-  await handlers.Start(ctx);
-  await ctx.scene.enter("SET_LOCATION");
+  ctx.reply("Hello");
 });
-bot.command("menu", handlers.Menu);
-bot.hears("Погода сейчас", (ctx) => {
-  console.log(ctx);
+
+bot.hears(REQUEST_TYPES.today, (ctx) => {
+  ctx.reply("Current");
 });
+bot.hears(REQUEST_TYPES.tomorrow, (ctx) => {
+  ctx.reply("Tomorrow");
+});
+bot.hears(REQUEST_TYPES.oneWeek, (ctx) => {
+  ctx.reply("One week");
+});
+bot.hears(REQUEST_TYPES.twoWeek, (ctx) => {
+  ctx.reply("Two weeks");
+});
+bot.hears(REQUEST_TYPES.changeLocation, (ctx) => {
+  ctx.reply("Change location");
+});
+
 bot.on("message", (ctx) => ctx.reply("Да-да"));
 
 bot.launch();
