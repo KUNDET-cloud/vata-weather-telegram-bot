@@ -1,36 +1,28 @@
-import { Telegraf, session, Scenes } from "telegraf";
+import { Telegraf, session } from "telegraf";
 import dotenv from "dotenv";
 
-import REQUEST_TYPES from "./const.js";
-import { handlers } from "./helpers/handlers.js";
-import { setLocationScene } from "./helpers/scenes.js";
+import { Send } from "./helpers/interface.js";
+import { Handler } from "./helpers/handlers.js";
+import { ACTIONS } from "./const.js";
+import {stage} from './helpers/scenes.js'
 
 dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const stage = new Scenes.Stage([setLocationScene]);
+
 bot.use(session());
 bot.use(stage.middleware());
 
-bot.start(async (ctx) => {
-  ctx.reply("Hello");
-});
 
-bot.hears(REQUEST_TYPES.today, (ctx) => {
-  ctx.reply("Current");
-});
-bot.hears(REQUEST_TYPES.tomorrow, (ctx) => {
-  ctx.reply("Tomorrow");
-});
-bot.hears(REQUEST_TYPES.oneWeek, (ctx) => {
-  ctx.reply("One week");
-});
-bot.hears(REQUEST_TYPES.twoWeek, (ctx) => {
-  ctx.reply("Two weeks");
-});
-bot.hears(REQUEST_TYPES.changeLocation, (ctx) => {
-  ctx.reply("Change location");
-});
+bot.start(Handler.SetLocation);
+
+bot.command("menu", Send.Menu);
+
+bot.hears(ACTIONS.TODAY, Handler.TodayForecast);
+bot.hears(ACTIONS.TOMORROW, Handler.TomorrowForecast);
+bot.hears(ACTIONS.ONE_WEEK, Handler.OneWeekForecast);
+bot.hears(ACTIONS.TWO_WEEKS, Handler.TwoWeeksForecast);
+bot.hears(ACTIONS.CHANGE_LOCATION, Handler.SetLocation);
 
 bot.on("message", (ctx) => ctx.reply("Да-да"));
 

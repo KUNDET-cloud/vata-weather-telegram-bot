@@ -1,10 +1,29 @@
-import { getCurrentForecast } from "../service/requests.js";
+import { Send } from "./interface.js";
+import { Get } from "../service/requests.js";
 
-export const handlers = {
-  Start: async (ctx) => {
-    await ctx.reply("Добро пожаловать");
+export const Handler = {
+  SetLocation: async ctx => ctx.scene.enter("SET_LOCATION"),
+
+  TodayForecast: async (ctx) => {
+    let res = await Get.TodayForecast();
+    Send.TodayForecast(ctx, res);
   },
 
-  //Получение погоды
-  currentForecast: async (ctx) => {},
+  TomorrowForecast: async (ctx) => {
+    // let res = await Get.TodayForecast();
+    let res = ''
+    Send.TomorrowForecast(ctx, res);
+  },
+
+  OneWeekForecast: async (ctx) => {
+    // let res = await Get.TodayForecast();
+    let res = ''
+    Send.OneWeekForecast(ctx, res);
+  },
+  TwoWeeksForecast: async (ctx) => {
+    // let res = await Get.TodayForecast();
+    let res = ''
+    Send.TwoWeeksForecast(ctx, res);
+  },
+
 };
