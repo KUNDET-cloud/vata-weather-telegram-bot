@@ -1,7 +1,7 @@
 import { Scenes,session } from "telegraf";
 
 import { Get } from "../service/requests.js";
-import { Send } from "./interface.js";
+import Send from "./interface.js";
 
 //Установить город
 const setLocationScene = new Scenes.BaseScene("SET_LOCATION");
