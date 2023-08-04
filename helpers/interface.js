@@ -9,8 +9,7 @@ export default class Send {
       "Выберите действие: ",
       Markup.keyboard([
         [ACTIONS.TODAY, ACTIONS.TOMORROW],
-        [ACTIONS.ONE_WEEK, ACTIONS.TWO_WEEKS],
-        [ACTIONS.CHANGE_LOCATION],
+        [ACTIONS.THREE_DAYS, ACTIONS.CHANGE_LOCATION],
       ]).resize()
     );
   }
@@ -66,8 +65,23 @@ export default class Send {
   }
 
   // Прогноз на неделю
-  static OneWeekForecast (ctx, res) {
-    ctx.reply('One week')
+  static SeveralDaysForecast (ctx, res) {
+    if (res == null) {
+      ctx.reply("Возникла ошибка :/\nПовторите позже");
+      return;
+    }
+
+    const days = res.forecast.forecastday;
+    let replyHtml = `<i>🏙  ${res.location.country}, ${res.location.name}</i>\n\n`;
+
+    for(let i = 0; i < days.length; i++) {
+      replyHtml+=`<b>Прогноз на ${days[i].date.replaceAll('-','.')}</b>\n`
+      replyHtml+=`<b>💬  ${days[i].day.condition.text}</b>\n`
+      replyHtml += `<b>🌡  Температура ${days[i].day.maxtemp_c}°C</b>\n`;
+      replyHtml += `<b>💨  Ветер ${days[i].day.maxwind_kph}км/ч</b>\n\n`;
+    }
+      
+    ctx.replyWithHTML(replyHtml)
   }
 
   // Прогноз на две недели

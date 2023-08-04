@@ -18,8 +18,7 @@ bot.command("menu", Handlers.Menu);
 
 bot.hears(ACTIONS.TODAY, isLocationSet, Handlers.TodayForecast);
 bot.hears(ACTIONS.TOMORROW, isLocationSet, Handlers.TomorrowForecast);
-bot.hears(ACTIONS.ONE_WEEK, isLocationSet, Handlers.OneWeekForecast);
-bot.hears(ACTIONS.TWO_WEEKS, isLocationSet, Handlers.TwoWeeksForecast);
+bot.hears(ACTIONS.THREE_DAYS, isLocationSet, Handlers.SeveralDaysForecast);
 bot.hears(ACTIONS.CHANGE_LOCATION, Handlers.SetLocation);
 
 bot.on("message", (ctx) => ctx.reply("Да-да"));

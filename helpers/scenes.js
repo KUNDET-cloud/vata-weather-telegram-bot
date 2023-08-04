@@ -1,6 +1,6 @@
 import { Scenes,session } from "telegraf";
 
-import { Get } from "../service/requests.js";
+import Get from "../service/requests.js";
 import Send from "./interface.js";
 
 //Установить город
